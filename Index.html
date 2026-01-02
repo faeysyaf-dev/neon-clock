@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Clock Widget</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Warna Default (Cyan) */
+            --neon-color: #00f3ff;
+            --bg-color: #0a0a0a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden; /* Biar gak ada scrollbar di Notion */
+            cursor: pointer; /* Memberi tahu user ini bisa diklik */
+            user-select: none;
+        }
+
+        .clock-container {
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .time {
+            font-size: 15vw; /* Responsif mengikuti lebar widget */
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 
+                0 0 7px #fff,
+                0 0 10px #fff,
+                0 0 21px #fff,
+                0 0 42px var(--neon-color),
+                0 0 82px var(--neon-color),
+                0 0 92px var(--neon-color),
+                0 0 102px var(--neon-color),
+                0 0 151px var(--neon-color);
+        }
+
+        .date {
+            font-size: 4vw;
+            color: var(--neon-color);
+            margin-top: 10px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--neon-color);
+        }
+
+        /* Instruksi kecil yang akan hilang setelah diklik */
+        .hint {
+            position: absolute;
+            bottom: 10px;
+            color: #333;
+            font-size: 12px;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container" id="clockBox">
+        <div class="time" id="timeDisplay">00:00:00</div>
+        <div class="date" id="dateDisplay">MON, JAN 01</div>
+    </div>
+    <div class="hint" id="hintText">Click to change color</div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            // Update Waktu
+            let hours = String(now.getHours()).padStart(2, '0');
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+            let seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('timeDisplay').textContent = `${hours}:${minutes}:${seconds}`;
+
+            // Update Tanggal
+            const options = { weekday: 'short', month: 'short', day: '2-digit' };
+            const dateString = now.toLocaleDateString('en-US', options).toUpperCase();
+            document.getElementById('dateDisplay').textContent = dateString;
+        }
+
+        // Jalankan jam setiap detik
+        setInterval(updateClock, 1000);
+        updateClock(); // Jalankan langsung saat load
+
+        // --- LOGIKA GANTI WARNA ---
+        const colors = [
+            '#00f3ff', // Cyan (Default)
+            '#ff00ff', // Neon Purple
+            '#ff3131', // Neon Red
+            '#39ff14', // Neon Green
+            '#ffd700'  // Neon Gold
+        ];
+        
+        let colorIndex = 0;
+        const root = document.documentElement;
+        
+        // Event Listener: Klik di mana saja untuk ganti warna
+        document.body.addEventListener('click', () => {
+            colorIndex = (colorIndex + 1) % colors.length;
+            root.style.setProperty('--neon-color', colors[colorIndex]);
+            
+            // Sembunyikan hint setelah klik pertama agar bersih
+            document.getElementById('hintText').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
